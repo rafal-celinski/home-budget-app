@@ -1,33 +1,31 @@
 package xyz.celinski;
 
 import java.util.Date;
-import java.util.Optional;
 
 public class User {
-    Optional<Integer> user_id;
-    String username;
-    String password_hash;
-    String email;
-    Date data_created;
+    private Integer userId;
+    private String username;
+    private String passwordHash;
+    private String email;
+    private Date dateCreated;
 
     public User(Integer user_id, String username, String password_hash, String email, Date data_created) {
-        this.user_id = Optional.of(user_id);
+        this.userId = user_id;
         this.username = username;
-        this.password_hash = password_hash;
+        this.passwordHash = password_hash;
         this.email = email;
-        this.data_created = data_created;
+        this.dateCreated = data_created;
     }
 
     public User(String username, String password_hash, String email) {
         this.username = username;
-        this.password_hash = password_hash;
+        this.passwordHash = password_hash;
         this.email = email;
     }
 
-    public Optional<Integer> getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
-
 
     public String getUsername() {
         return username;
@@ -37,12 +35,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword_hash() {
-        return password_hash;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword_hash(String password_hash) {
-        this.password_hash = password_hash;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getEmail() {
@@ -53,22 +51,18 @@ public class User {
         this.email = email;
     }
 
-    public Date getData_created() {
-        return data_created;
-    }
-
-    public void setData_created(Date data_created) {
-        this.data_created = data_created;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "user_id=" + user_id +
+                "userId=" + userId +
                 ", username='" + username + '\'' +
-                ", password_hash='" + password_hash + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
                 ", email='" + email + '\'' +
-                ", data_created=" + data_created +
+                ", dateCreated=" + dateCreated +
                 '}';
     }
 }
