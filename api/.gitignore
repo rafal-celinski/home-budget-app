@@ -4,5 +4,5 @@ target
 mvnw
 mvnw.cmd
 
-src/main/resources/db_config.json
+src/main/resources/config.properties
 

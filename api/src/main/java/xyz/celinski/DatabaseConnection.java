@@ -1,37 +1,25 @@
 package xyz.celinski;
 
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 
 public class DatabaseConnection {
     private static DatabaseConnection instance;
-    private final Connection connection;
+    private String url;
+    private String username;
+    private String password;
 
     private DatabaseConnection() {
-        try (FileReader fileReader = new FileReader("src/main/resources/db_config.json")) {
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject secrets = new JSONObject(jsonTokener);
-
-            String url = secrets.getString("url");
-            String user = secrets.getString("user");
-            String password = secrets.getString("password");
-
-            connection = DriverManager.getConnection(url, user, password);
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Can't find 'db_config.json' file");
-        }
-        catch (SQLException e) {
-            throw new RuntimeException("Can't connect to database");
-        }
+        final String CONFIG_FILE_PATH = "resources\\config.properties";
+        File configFile = new File(CONFIG_FILE_PATH);
+        loadConfig(configFile);
     }
 
     public static DatabaseConnection getInstance() {
@@ -41,21 +29,34 @@ public class DatabaseConnection {
         return instance;
     }
 
-    public void closeConnection() {
-        try {
-            connection.close();
-            instance = null;
-        }
-        catch (SQLException e) {
+    private void loadConfig(File configFile) {
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream(configFile)) {
+            properties.load(input);
+            url = properties.getProperty("db.url");
+            username = properties.getProperty("db.username");
+            password = properties.getProperty("db.password");
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public ResultSet executeQuery(String sql) throws SQLException {
-        return connection.createStatement().executeQuery(sql);
+    public Connection getConnection() {
+        try {
+            Class.forName("org.postgresql.Driver");
+            return DriverManager.getConnection(url, username, password);
+        }
+        catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public int executeUpdate(String sql) throws SQLException {
-        return connection.createStatement().executeUpdate(sql);
+    public void close(Connection connection) {
+        try {
+            connection.close();
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
