@@ -4,5 +4,5 @@ target
 mvnw
 mvnw.cmd
 
-src/main/resources/config.properties
+resources/config.properties
 
